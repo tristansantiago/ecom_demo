@@ -35,3 +35,26 @@ test('Add Product to Cart and Place Order', { tag: '@smoke' }, async ({ home, pr
   });
 
 });
+
+test('Navigate Using Navbar Links', { tag: '@smoke' }, async ({ home, navbar, page }) => {
+  const categories = ['Contact',];
+  await test.step('Navigate to Home Page', async () => {
+    await home.goto();
+  });
+});
+
+test.describe('@smoke Categories', () => {
+  const categories = ['Phones', 'Laptops', 'Monitors'] as const;
+
+  for (const cat of categories) {
+    test(`Category renders: ${cat}`, async ({ home, page }) => {
+      await home.goto();
+      await home.openCategory(cat);
+
+      // At least one product tile visible for the category.
+      await expect(page.locator('#tbodyid .card').first()).toBeVisible();
+      // Category link stays highlighted/visible.
+      await expect(page.getByRole('link', { name: cat })).toBeVisible();
+    });
+  }
+});
